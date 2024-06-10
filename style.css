@@ -1,0 +1,235 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+  }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+
+        }
+
+        .page {
+            display: grid;
+            grid-template-columns: 1fr 3.5fr 3.5fr 1fr;
+            height: 100vh;
+        }
+    
+        .fir{
+            grid-column-start: 2;
+            grid-column-end: 3;
+            background-image: url("book/1.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+
+        
+
+        .sec{
+            grid-column-start: 3;
+            grid-column-end: 4;
+            background-image: url("book/2.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .arrow{
+            background-color: #282828;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .button{
+            position: fixed;
+            left:50%;
+            transform: translateX(-50%) translateY(200px); /* 초기 상태에서 버튼을 숨깁니다. */
+            bottom:3%;
+            width:105px;
+            height:105px;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 100px;
+            transition: all 0.5s ease; /* 부드러운 애니메이션 효과를 위해 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .button img{
+            position: absolute;
+        }
+
+        
+        .button.show {
+            transform: translateX(-50%) translateY(0); /* 버튼을 보여주기 */
+            
+        }
+
+        .button.error {
+            animation: shake 0.5s ease-in-out;       
+         }
+        
+            @keyframes shake {
+             0% { transform: translateX(-52%); }
+             25% { transform: translateX(-48%); }
+             50% { transform: translateX(-52%); }
+             75% { transform: translateX(-48%); }
+             100% { transform: translateX(-50%); }
+    }
+
+        .arrow.right img, .arrow.left img{
+            transition: all 0.3s ease-out;
+        }
+
+        .input-style {
+            width: 70%;
+            height: 50px;
+            border: none !important; 
+            outline: none; 
+            border-radius: 25px;
+            padding: 10px;
+            font-size: 16px;
+            color: #FFFFFF; 
+            background-color: rgba(0,0,0,0);
+        }
+
+        .send {
+            width: 20%;
+            height: 55px;
+            border: none;
+            outline: none;
+            border-radius: 50px;
+            margin-left: 10px;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 22px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .response-box {
+            width: 700px;
+            height: auto;
+            color: white;
+            font-size: 18px;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .out{
+            position: absolute;
+            top: 2%;
+            display:flex;
+            width:11.11%;
+            justify-content: center;
+            color:white;
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .button.show.hide {
+            transform: translateX(-50%) translateY(+200%); /* 버튼을 보여주기 */
+            transition: all 0.3s ease-in;
+        }
+
+        .simplify-button{
+            margin-right: 20px;
+            padding: 20px 20px;
+            font-size:  16px;
+            color: #C8FAFF;
+            width:25%;
+            height: auto;
+            border-radius: 1em;
+            border: none;
+            background-color: rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.5s ease;
+        
+        }
+
+
+        
+
+
+        /* animation */
+        
+.loader {
+    position: relative;
+    margin: 0 auto;
+    width: 100px;
+    
+    &:before {
+      content: '';
+      display: block;
+      padding-top: 100%;
+    }
+  }
+  
+  .circular {
+    animation: rotate 2s linear infinite;
+    height: 50%;
+    transform-origin: center center;
+    width: 50%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+  
+  .path {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+    stroke-linecap: round;
+  }
+  
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes dash {
+    0% {
+      stroke-dasharray: 1, 200;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 89, 200;
+      stroke-dashoffset: -35px;
+    }
+    100% {
+      stroke-dasharray: 89, 200;
+      stroke-dashoffset: -124px;
+    }
+  }
+  
+  @keyframes color {
+    100%,
+    0% {stroke: #F6969A;}
+    40% {stroke:  #2FD0E4;}
+    66% {stroke: #52F5BB;}
+    80%,
+    90% {stroke:  #FFCB44;}
+  }
+  
+  .showbox {
+    position: absolute;
+    top:37.5vw;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+    padding: 5%;
+    display:none;
+  }

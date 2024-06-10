@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+
+</head>
+<body>
+    
+    <a href="home.html"><div class="out">
+        <span class="material-symbols-outlined">
+        reply
+        </span></div></a>
+    <div class="page">
+        <div class="arrow left" style="grid-column-start: 1; grid-column-end: 2;">
+            <img src="left.svg">
+        </div>
+
+        <div class="fir">
+            
+        </div>
+
+        <div class="sec"></div>
+
+        <div class="arrow right" style="grid-column-start: 4; grid-column-end: 5;">
+            <img src="right.svg">
+        </div>
+
+            <div class="button" id="button">
+            <img src="button.png">
+        </div> 
+    </div>
+
+<!-- 로딩 -->
+    <div class="showbox">
+        <div class="loader">
+          <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+          </svg>
+        </div>
+      </div>
+
+    <script>
+        const Right = document.querySelector(".arrow.right");
+        const Left = document.querySelector(".arrow.left");
+        const arrowRight = document.querySelector(".arrow.right img");
+        const arrowLeft = document.querySelector(".arrow.left img");
+        const buttonx = document.querySelector("#button")
+        const button = document.querySelector(".button");
+        const fir = document.querySelector(".fir");
+        const sec = document.querySelector(".sec");
+        const loading = document.querySelector(".showbox")
+
+
+        // 책 넘기기 기능
+        let odd = 1;
+        let even = 2;
+  
+        Left.addEventListener('mouseenter', function() {
+            arrowLeft.style.width = "22px";
+            arrowLeft.style.height = "108px";
+        });
+
+        Left.addEventListener('mouseleave', function() {
+            arrowLeft.style.width = "11px";
+            arrowLeft.style.height = "54px";
+        });
+
+        Left.addEventListener('click', function(){
+            odd -= 2;
+            even -= 2;
+            if (odd < 1) {
+                odd = 1; // Avoid going below page 1
+                even = 2;
+            }
+            const oddpage = `book/${odd}.png`;
+            const evenpage = `book/${even}.png`;
+
+            fir.style.backgroundImage = `url(${oddpage})`;
+            sec.style.backgroundImage = `url(${evenpage})`;
+        });
+
+        Right.addEventListener('mouseenter', function() {
+            arrowRight.style.width = "22px";
+            arrowRight.style.height = "108px";
+        });
+
+        Right.addEventListener('mouseleave', function() {
+            arrowRight.style.width = "11px";
+            arrowRight.style.height = "54px";
+        });
+
+        Right.addEventListener('click', function(){
+            odd += 2;
+            even += 2;
+            if (even > 68) {
+                odd = 67; // Avoid going below page 1
+                even = 68;
+            }
+            const oddpage = `book/${odd}.png`;
+            const evenpage = `book/${even}.png`;
+
+            fir.style.backgroundImage = `url(${oddpage})`;
+            sec.style.backgroundImage = `url(${evenpage})`;
+        });
+
+        
+        
+        // 마우스가 다시 화면 하단 30%이상 올라갈때 - 원상복구 함수
+        function resetButton() {
+            const buttonContent = button.querySelector('input');
+            if (!buttonContent) { 
+                return;
+            }
+            button.innerHTML = '<img src="button.png">';
+            button.style.width = "105px"; 
+            button.style.height = "105px"; 
+            button.style.borderRadius = "100em";
+        } 
+        
+        // 하단 20%에 마우스가 이동할 때, 애니메이션 효과
+        document.addEventListener('mousemove', function(e) {
+            const windowHeight = window.innerHeight;
+            const triggerHeight = windowHeight * 0.7; // 하단 20%
+            
+            if(e.clientY > triggerHeight) {
+                button.classList.add('show');
+            } else {
+                button.classList.remove('show');
+                resetButton(); 
+            }
+        });
+
+
+        
+
+        // 버튼을 눌렀을 때 생성
+        button.addEventListener('click', function() {
+            const inputElement = document.createElement('input');
+            inputElement.setAttribute('type', 'text');
+            inputElement.setAttribute('placeholder', '단어를 적어주세요.');
+            inputElement.classList.add('input-style');
+            
+            const sendButton = document.createElement('button');
+            sendButton.innerHTML = '<img src="button.png" style="transform: translateX(-50%) translateY(-50%); width:40px; height:40px;">'
+            sendButton.classList.add('send');
+            
+            button.innerHTML = ''; 
+            button.appendChild(inputElement); 
+            button.appendChild(sendButton); 
+            button.style.width = "300px";
+            button.style.height = "80px";
+            button.style.borderRadius = "100em"; 
+            inputElement.focus();  // 입력창 자동 포커스
+
+
+            sendButton.addEventListener('click', function() {
+                if (inputElement.value.trim() === '') {
+                button.classList.add('error');
+                 setTimeout(() => button.classList.remove('error'), 1000);
+                 } else {
+                 let message = inputElement.value + "의 뜻이 무엇인가요?";
+                 button.classList.add('hide');
+                 loading.style.display = "block"  //로딩애니메이션
+            
+                 // callGPT 함수 호출하고, gpt응답 내용 전달받기
+                 callGPT(message, function(answer) {
+                 //  로컬 스토리지에 저장
+                 var existingEntries = JSON.parse(localStorage.getItem("allEntries")) || [];
+                 existingEntries.push({ word: inputElement.value, answer: answer });
+                 localStorage.setItem("allEntries", JSON.stringify(existingEntries));
+                 });
+                 }
+            });
+        });
+
+     
+        // gpt 설정
+        const apiKey = "sk-proj-QOdXSvK4daqqqDxDwFxhT3BlbkFJ1pfEPGJ5avdvu2E2qks6"; 
+        const endpoint = "https://api.openai.com/v1/chat/completions";
+        let results = [];
+
+
+        // 콜백함수로 함수에서 함수로 이동
+        function callGPT(prompt, callback){
+
+                    fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${apiKey}`
+                                },
+                        body: JSON.stringify({
+                            model: "ft:gpt-3.5-turbo-1106:personal:test20:9Yc3fLr9",  // 파인튜닝 버전 GPT
+                                messages: [{
+                                role: "system", 
+                                content: "한국의 초등학교 1-2학년 담임 교사이며, 존대말로 8살 아이가 알아들을 수 있는 단어와 문장으로 단어의 정의와 예시를 들어 두 문장으로 설명해주세요."
+                                    },{
+                                role: "user",
+                                content: prompt
+                                    }],
+                            max_tokens: 128,
+                            temperature: 1
+                                            })
+                    })
+                    
+            .then(response => response.json())
+            .then(data => {
+                if(data.choices && data.choices.length > 0) {
+                        showResponse(data.choices[0].message.content);
+                        button.classList.remove('hide');
+                        loading.style.display = "none"
+                        const answer = data.choices[0].message.content;
+                        callback(answer);  // 콜백함수를 위한 파라미터
+                } else {
+                    console.log("No response from GPT-4.");
+                }
+            })
+        
+        }
+
+    // gpt가 대답 CSS 설정
+    function showResponse(response) {
+    button.innerHTML = ''; 
+    button.style.width = "700px"; 
+    button.style.height = "auto";
+    button.style.borderRadius = "1em";
+    const responseBox = document.createElement('div'); 
+    responseBox.classList.add('response-box'); 
+    responseBox.innerText = response; 
+    responseBox.style.padding = "20px 50px"; 
+
+    // 쉽게 설명해줘 버튼 생성
+    const simplifyButton = document.createElement('button');
+    simplifyButton.innerText = '쉽게 설명해줘!';
+    simplifyButton.classList.add('simplify-button');
+    button.appendChild(responseBox); 
+    button.appendChild(simplifyButton);
+
+    // 쉽게 설명해줘 버튼 클릭 이벤트
+    simplifyButton.addEventListener('click', function() {
+        const newPrompt = response + " 이 말을 조금 더 쉽게 한 문장으로 설명해주세요.";
+        button.classList.add('hide');   //버튼 못누르게 숨기기
+        loading.style.display = "block"
+            
+            // GPT호출
+            callGPT(newPrompt, function(newAnswer) {
+            showResponse(newAnswer);    // GPT 답변
+            button.classList.remove('hide');  //버튼 다시 재생성
+            });
+
+        });
+    }
+
+
+
+    </script>
+  
+</body>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        @font-face {
+            font-family: 'Pretendard-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;  
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+        }
+
+        body {
+            width: 99vw;
+            height: auto;
+        }
+
+        #displayArea {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #displayArea div {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            background-color: #fff55f;
+            width: 20%;
+            height: 300px;
+            max-height: 350px;
+            padding: 20px;
+        }
+
+        .wordStyle {
+            font-size: 32px; 
+            font-weight: bold; 
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .answerStyle {
+            font-size: 18px;
+            display: block;
+        }
+
+        .removeButton {
+            align-self: flex-end;
+            margin-top: auto;
+            padding: 5px 10px;
+        }
+        .material-symbols-outlined {
+            color: #BFB73B;
+            font-size: 28px;
+        }
+
+        .nav {
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            width: 99vw;
+            height: 72px;
+            padding: 0 300px;
+            z-index: 100;
+            transition: all 0.3s ease-out;  
+        }
+
+        .nav.blur {
+            background: rgba(54, 54, 54, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .bar {
+            position: absolute;
+            width: 99vw;
+            height: 1px;
+            background-color: white;
+            padding: 0;
+            margin: 0;
+            top: 70px;
+            left: 0px;
+            opacity: 0;
+            transition: all 0.3s ease-out;  
+        }
+
+        .bar.visible {
+            opacity: 100;
+        }
+
+        .nav img {
+            flex-shrink: 0; 
+            width: 70%;
+        }
+
+        .nav ul {
+            display: flex;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            margin-left: auto; 
+        }
+
+        .nav li {
+            font-size: 16px;
+            padding: 0 0 0 50px;
+        }
+
+        .nav li:hover {
+            color: #76DEFF;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .title {
+            margin-bottom: 100px;
+            width: 100%;
+            height: 400px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: 900;
+            align-content: center;
+            background-image: url("https://i.nextmedia.com.au/News/CRN_14_stock_office_supplies.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+        }
+        
+        .title::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2); /* 배경 투명도 조절 */
+            backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+
+        .title h2 {
+            color: black;
+            position: relative;
+            z-index: 2;
+            margin: 0;
+            line-height: 400px; /* 세로 중앙 정렬을 위해 */
+        }
+    </style>
+
+    <meta charset="UTF-8">
+    <title>Display Data</title>
+    <script>
+        function removeEntry(index) {
+            var entries = JSON.parse(localStorage.getItem("allEntries")); //데이터 불러오기
+            entries.splice(index, 1); // index 1에 위치한 데이터 제거
+            localStorage.setItem("allEntries", JSON.stringify(entries)); //변경된 문자열 데이터 저장
+            location.reload(); //새로고침
+        }
+
+        window.onload = function() {
+            var entries = JSON.parse(localStorage.getItem("allEntries")); //json형식으로 불러오기
+            var displayArea = document.getElementById('displayArea');
+
+            // 만약 로컬스토리지에 저장된 것이 있다면 메모장 생성
+            if (entries) {
+                entries.forEach(function(entry, index) {
+                    var paragraph = document.createElement('div');
+                    var wordSpan = document.createElement('span');   //질문한 단어
+                    var answerSpan = document.createElement('span');  //답한 내용
+                    var removeButton = document.createElement('button'); //제거 버튼
+                    // 단어 css
+                    wordSpan.innerText = '"' + entry.word + '"';
+                    wordSpan.className = 'wordStyle';
+                    // 답변 css
+                    answerSpan.innerText = entry.answer;
+                    answerSpan.className = 'answerStyle';
+                    // 제거 버튼 css
+                    removeButton.innerHTML = '<span class="material-symbols-outlined">delete</span>';
+                    removeButton.className = 'removeButton';
+                    removeButton.onclick = function() { removeEntry(index); }; //onclick 이벤트 = 제거 함수
+                    removeButton.style.border = 'none';
+                    removeButton.style.backgroundColor = 'rgba(0,0,0,0)';
+                    paragraph.appendChild(wordSpan); 
+                    paragraph.appendChild(answerSpan); 
+                    paragraph.appendChild(removeButton); 
+                    displayArea.appendChild(paragraph);
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="nav">
+        <a href="home.html"><h1><img src="LOGO.png"></h1></a>
+        <a href="home.html"><li style="list-style-type: none;">교재</li></a>
+        <a href="home.html"><li style="list-style-type: none;">일반교양</li></a>
+        <a href="home.html"><li style="list-style-type: none;">논문</li></a>
+        <a href="home.html"><li style="list-style-type: none;">커뮤니티</li></a>
+
+        <ul class="my">
+            <a href="#"><li>단어장</li></a>
+            <a href="#"><li>알림</li></a>
+            <a href="#"><li>내 정보</li></a>
+        </ul>
+        <div class="bar"></div>
+    </div>
+
+    <div class="title"><h2>단어장</h2></div>
+    <div id="displayArea"></div> <!-- 여기에 입력된 데이터가 표시됩니다 -->
+</body>
+</html>
